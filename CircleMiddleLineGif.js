@@ -1,4 +1,4 @@
-const w = 500, h = 500
+const w = 500, h = 500, nodes = 5
 const Canvas = require('canvas')
 const GifEncoder = require('gifencoder')
 const k = 3
@@ -19,10 +19,9 @@ class State {
         }
     }
 
-    startUpdating(cb) {
+    startUpdating() {
         if (this.dir == 0) {
             this.dir = 1 - 2 * this.prevScale
-            cb()
         }
     }
 }
@@ -54,5 +53,38 @@ const drawFns = (context, i, scale, gap) => {
         context.lineTo(r * sc, 0)
         context.stroke()
         context.restore()
+    }
+}
+
+class CMLNode {
+    constructor(i) {
+        this.i = i
+        this.state = new State()
+    }
+
+    addNeighbor() {
+        if (this.i < nodes - 1) {
+            this.next = new CMLNode(this.i + 1)
+            this.next.prev = this
+        }
+    }
+
+
+    draw(context) {
+        const gap = w / (nodes + 1)
+        context.save()
+        context.translate(gap * this.i + gap, h/2)
+        for (var i = 0; i < 3 ; i++) {
+            drawFns(context, i, this.state.scale, gap)
+        }
+        context.restore()
+    }
+
+    update(cb) {
+        this.state.update(cb)
+    }
+
+    startUpdating() {
+        this.state.startUpdating()
     }
 }
