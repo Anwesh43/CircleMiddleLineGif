@@ -78,6 +78,10 @@ class CMLNode {
             drawFns(context, i, this.state.scale, gap)
         }
         context.restore()
+
+        if (this.prev) {
+            this.prev.draw(context)
+        }
     }
 
     update(cb) {
@@ -87,4 +91,30 @@ class CMLNode {
     startUpdating() {
         this.state.startUpdating()
     }
+}
+
+class CircleMiddleLine {
+    constructor() {
+        this.curr = new CMLNode(0)
+        this.dir = 1
+        this.curr.startUpdating()
+    }
+
+    draw(context) {
+        this.curr.draw(context)
+    }
+
+    update(cb) {
+        this.curr.update(() => {
+            this.curr = this.curr.getNext(this.dir, () => {
+                this.dir *= -1
+            })
+            if (this.curr.i == 0 && this.dir == 1) {
+                cb()
+            } else {
+                this.curr.startUpdating()
+            }
+        })
+    }
+
 }
