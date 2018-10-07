@@ -91,6 +91,18 @@ class CMLNode {
     startUpdating() {
         this.state.startUpdating()
     }
+
+    getNext(dir, cb) {
+        var curr = this.next
+        if (dir == -1) {
+            curr = this.prev
+        }
+        if (curr) {
+            return curr
+        }
+        cb()
+        return this
+    }
 }
 
 class CircleMiddleLine {
