@@ -118,3 +118,23 @@ class CircleMiddleLine {
     }
 
 }
+
+class Renderer {
+    constructor() {
+        this.running = true
+        this.cml = new CircleMiddleLine()
+    }
+
+    render(context, cb, endcb) {
+        while(this.running) {
+            context.fillStyle = '#212121'
+            context.fillRect(0, 0, w, h)
+            this.cml.draw(context)
+            cb(context)
+            this.cml.update(() => {
+                endcb()
+                this.running = false
+            })
+        }
+    }
+}
