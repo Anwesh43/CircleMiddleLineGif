@@ -169,3 +169,5 @@ class CircleMiddleLineGif {
         gif.render()
     }
 }
+
+module.exports = CircleMiddleLineGif.init
