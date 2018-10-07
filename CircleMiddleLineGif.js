@@ -138,3 +138,34 @@ class Renderer {
         }
     }
 }
+
+class CircleMiddleLineGif {
+    constructor() {
+        this.renderer = new Renderer()
+        this.encoder = new GifEncoder(w, h)
+        this.canvas = new Canvas(w, h)
+        this.context = this.canvas.getContext('2d')
+    }
+
+    initEncoder(fn) {
+        this.encoder.setQuality(100)
+        this.encoder.setRepeat(0)
+        this.encoder.setDelay(50)
+        this.encoder.createReadStream().pipe(require('fs').createWriteStream(fn))
+    }
+
+    render() {
+        this.encoder.start()
+        this.renderer.render(this.context, (ctx) => {
+            this.encoder.addFrame(ctx)
+        }, () => {
+            this.encoder.end()
+        })
+    }
+
+    static init(fn) {
+        const gif = new CircleMiddleLineGif()
+        gif.initEncoder(fn)
+        gif.render()
+    }
+}
