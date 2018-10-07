@@ -11,6 +11,7 @@ class State {
 
     update(cb) {
         this.scale += (0.1 / k) * this.dir
+        console.log(this.scale)
         if (Math.abs(this.scale - this.prevScale) > 1) {
             this.scale = this.prevScale + this.dir
             this.dir = 0
@@ -35,8 +36,8 @@ const drawFns = (context, i, scale, gap) => {
     const sc = Math.min(1/k, Math.max(0, scale - (1/k) * i)) * k
     if (i == 0) {
         context.beginPath()
-        for (var k = -90; k <=-90 + 360 * sc; k++) {
-            const x = r * Math.cos(k * Math.PI/180), y = r * Math.sin(k * Math.PI/180)
+        for (var a = -90; a <=-90 + 360 * sc; a++) {
+            const x = r * Math.cos(a * Math.PI/180), y = r * Math.sin(a * Math.PI/180)
             if (k == -90) {
                 context.moveTo(x, y)
             } else {
@@ -60,6 +61,7 @@ class CMLNode {
     constructor(i) {
         this.i = i
         this.state = new State()
+        this.addNeighbor()
     }
 
     addNeighbor() {
@@ -71,7 +73,9 @@ class CMLNode {
 
 
     draw(context) {
+
         const gap = w / (nodes + 1)
+        //console.log(`${gap * this.i + gap}, ${h/2}`)
         context.save()
         context.translate(gap * this.i + gap, h/2)
         for (var i = 0; i < 3 ; i++) {
@@ -160,10 +164,10 @@ class CircleMiddleLineGif {
     }
 
     initEncoder(fn) {
+        this.encoder.createReadStream().pipe(require('fs').createWriteStream(fn))
         this.encoder.setQuality(100)
         this.encoder.setRepeat(0)
         this.encoder.setDelay(50)
-        this.encoder.createReadStream().pipe(require('fs').createWriteStream(fn))
     }
 
     render() {
